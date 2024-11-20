@@ -8,8 +8,9 @@ import pandas as pd
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # Load variables from .env file
-google_sheet_key = os.getenv("GOOGLE_SHEET_KEY")
+# load_dotenv()  # Load variables from .env file
+# google_sheet_key = os.getenv("GOOGLE_SHEET_KEY")
+google_sheet_key = st.secrets["GOOGLE_SHEET_KEY"]
 if not google_sheet_key:
     raise ValueError("GOOGLE_SHEET_KEY environment variable is not set!")
 
