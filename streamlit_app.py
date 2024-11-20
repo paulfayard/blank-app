@@ -24,7 +24,7 @@ df = df.query("Type!='Amical'").copy()
 df['points'] = df["Résultat"].apply(lambda x: 4 if x == "V" else 2 if x == "N" else 1)
 
 df_player = df.groupby("Joueur").agg({"Buteur": "sum", "Passeur": "sum", "Match": "count", "points": "sum", "Remp":"sum", "But pour" : "sum", "But contre" : "sum"}).sort_values("points", ascending=False)
-for metric in ["Buteur", "Passeur", "points", "Remp", "But pour", "But contre"]:
+for metric in ["Buteur", "Passeur", "points"]:
     df_player[f'{metric}_per_match'] = df_player[metric] / df_player["Match"]
 
 st.write(df_player)
