@@ -1,13 +1,29 @@
 import streamlit as st
 import pandas as pd
 
-df = pd.DataFrame({
-    'first column': [1, 2, 3, 4],
-    'second column': [10, 20, 30, 40]
-    })
 
-option = st.selectbox(
-    'Which number do you like best?',
-     df['first column'])
+import gdown
+import pandas as pd
 
-'You selected: ', option
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load variables from .env file
+google_sheet_key = os.getenv("GOOGLE_SHEET_KEY")
+if not google_sheet_key:
+    raise ValueError("GOOGLE_SHEET_KEY environment variable is not set!")
+
+url = f"https://docs.google.com/spreadsheets/d/{google_sheet_key}/export?format=xlsx"
+output = "sheet.xlsx"
+gdown.download(url, output, quiet=False)
+df = pd.read_excel(output)
+
+df = df.query("Type!='Amical'").copy()
+
+df['points'] = df["Résultat"].apply(lambda x: 4 if x == "V" else 2 if x == "N" else 1)
+
+df_player = df.groupby("Joueur").agg({"Buteur": "sum", "Passeur": "sum", "Match": "count", "points": "sum", "Remp":"sum", "But pour" : "sum", "But contre" : "sum"}).sort_values("points", ascending=False)
+for metric in ["Buteur", "Passeur", "points", "Remp", "But pour", "But contre"]:
+    df_player[f'{metric}_per_match'] = df_player[metric] / df_player["Match"]
+
+st.write(df_player)
