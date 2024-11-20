@@ -26,5 +26,6 @@ df['points'] = df["Résultat"].apply(lambda x: 4 if x == "V" else 2 if x == "N" 
 df_player = df.groupby("Joueur").agg({"Buteur": "sum", "Passeur": "sum", "Match": "count"})
 for metric in ["Buteur", "Passeur"]:
     df_player[f'{metric}_per_match'] = df_player[metric] / df_player["Match"]
+    df_player[f'{metric}_per_match'] = df_player[f'{metric}_per_match'].round(2)
 
 st.write(df_player)
